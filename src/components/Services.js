@@ -7,6 +7,123 @@ import {
 } from 'react-icons/fa';
 import './Services.css';
 
+// --- STATIC DATA MOVED OUTSIDE COMPONENT (FIXES USEMEMO ERROR) ---
+const serviceCategories = [
+  { id: 'all', name: 'All Services', icon: <FaStar />, color: '#2563eb' },
+  { id: 'general', name: 'General Dentistry', icon: <FaTooth />, color: '#059669' },
+  { id: 'cosmetic', name: 'Cosmetic', icon: <FaSmile />, color: '#ec4899' },
+  { id: 'implant', name: 'Implants', icon: <FaCrown />, color: '#f59e0b' },
+  { id: 'ortho', name: 'Orthodontics', icon: <FaAlignCenter />, color: '#8b5cf6' },
+  { id: 'digital', name: 'Digital', icon: <FaDesktop />, color: '#06b6d4' },
+];
+
+const allServices = [
+  {
+    id: 1,
+    title: "Root Canal Treatment",
+    description: "Painless root canal therapy using advanced rotary endodontics.",
+    icon: <FaTooth />,
+    category: 'general',
+    details: "Advanced root canal treatment to save infected teeth with minimal discomfort."
+  },
+  {
+    id: 2,
+    title: "Laser Filling",
+    description: "Painless cavity treatment with laser technology.",
+    icon: <FaMagic />,
+    category: 'general',
+    details: "Modern laser technology for cavity treatment without traditional drilling."
+  },
+  {
+    id: 3,
+    title: "Wisdom Tooth Extraction",
+    description: "Safe removal of impacted wisdom teeth with minimal discomfort.",
+    icon: <FaTeethOpen />,
+    category: 'general',
+    details: "Expert surgical extraction of wisdom teeth when needed."
+  },
+  {
+    id: 4,
+    title: "Complete Denture",
+    description: "Full mouth restoration with custom-made removable dentures.",
+    icon: <FaTeeth />,
+    category: 'general',
+    details: "Complete oral rehabilitation with custom dentures."
+  },
+  {
+    id: 5,
+    title: "Implant Denture",
+    description: "Fixed implant-supported dentures for superior stability.",
+    icon: <FaShieldAlt />,
+    category: 'implant',
+    details: "Combines implant strength with denture convenience for best results."
+  },
+  {
+    id: 6,
+    title: "Orthodontic Treatment",
+    description: "Teeth alignment for perfect smile and bite correction.",
+    icon: <FaAlignCenter />,
+    category: 'ortho',
+    details: "Professional teeth straightening for better function and aesthetics."
+  },
+  {
+    id: 7,
+    title: "Clear Aligners",
+    description: "Invisible aligner treatment for discreet teeth straightening.",
+    icon: <FaXRay />,
+    category: 'ortho',
+    details: "Modern alternative to traditional braces - nearly invisible treatment."
+  },
+  {
+    id: 8,
+    title: "Zirconia Crown",
+    description: "Strong and aesthetic metal-free crowns.",
+    icon: <FaCrown />,
+    category: 'cosmetic',
+    details: "Durable and aesthetic crown solution that blends perfectly."
+  },
+  {
+    id: 9,
+    title: "E-Max Crown",
+    description: "Premium ceramic crowns for superior aesthetics.",
+    icon: <FaCrown />,
+    category: 'cosmetic',
+    details: "High-end ceramic crowns for the most natural-looking results."
+  },
+  {
+    id: 10,
+    title: "Digital Dentistry",
+    description: "Advanced digital technology for precise dental work.",
+    icon: <FaDesktop />,
+    category: 'digital',
+    details: "Cutting-edge digital technology for accurate dental procedures."
+  },
+  {
+    id: 11,
+    title: "Dental Implants",
+    description: "Permanent tooth replacement solution.",
+    icon: <FaCrown />,
+    category: 'implant',
+    details: "Best long-term solution for missing teeth that functions naturally."
+  },
+  {
+    id: 12,
+    title: "Dental Veneers",
+    description: "Thin porcelain shells for perfect smile transformation.",
+    icon: <FaPaintBrush />,
+    category: 'cosmetic',
+    details: "Fix chips, gaps, and discoloration with custom-made veneers."
+  },
+  {
+    id: 13,
+    title: "CAD/CAM Dentistry",
+    description: "Computer-aided design and manufacturing for dental restorations.",
+    icon: <FaRobot />,
+    category: 'digital',
+    details: "Same-day crowns and restorations using advanced CAD/CAM technology."
+  }
+];
+
 const Services = ({ isPopup = false, onBookNow }) => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedService, setSelectedService] = useState(null);
@@ -18,125 +135,8 @@ const Services = ({ isPopup = false, onBookNow }) => {
     }
   }, [isPopup]);
 
-  // Static Data (Moved inside useMemo would be overkill, but keeping clean)
-  const serviceCategories = [
-    { id: 'all', name: 'All Services', icon: <FaStar />, color: '#2563eb' },
-    { id: 'general', name: 'General Dentistry', icon: <FaTooth />, color: '#059669' },
-    { id: 'cosmetic', name: 'Cosmetic', icon: <FaSmile />, color: '#ec4899' },
-    { id: 'implant', name: 'Implants', icon: <FaCrown />, color: '#f59e0b' },
-    { id: 'ortho', name: 'Orthodontics', icon: <FaAlignCenter />, color: '#8b5cf6' },
-    { id: 'digital', name: 'Digital', icon: <FaDesktop />, color: '#06b6d4' },
-  ];
-
-  const allServices = [
-    {
-      id: 1,
-      title: "Root Canal Treatment",
-      description: "Painless root canal therapy using advanced rotary endodontics.",
-      icon: <FaTooth />,
-      category: 'general',
-      details: "Advanced root canal treatment to save infected teeth with minimal discomfort."
-    },
-    {
-      id: 2,
-      title: "Laser Filling",
-      description: "Painless cavity treatment with laser technology.",
-      icon: <FaMagic />,
-      category: 'general',
-      details: "Modern laser technology for cavity treatment without traditional drilling."
-    },
-    {
-      id: 3,
-      title: "Wisdom Tooth Extraction",
-      description: "Safe removal of impacted wisdom teeth with minimal discomfort.",
-      icon: <FaTeethOpen />,
-      category: 'general',
-      details: "Expert surgical extraction of wisdom teeth when needed."
-    },
-    {
-      id: 4,
-      title: "Complete Denture",
-      description: "Full mouth restoration with custom-made removable dentures.",
-      icon: <FaTeeth />,
-      category: 'general',
-      details: "Complete oral rehabilitation with custom dentures."
-    },
-    {
-      id: 5,
-      title: "Implant Denture",
-      description: "Fixed implant-supported dentures for superior stability.",
-      icon: <FaShieldAlt />,
-      category: 'implant',
-      details: "Combines implant strength with denture convenience for best results."
-    },
-    {
-      id: 6,
-      title: "Orthodontic Treatment",
-      description: "Teeth alignment for perfect smile and bite correction.",
-      icon: <FaAlignCenter />,
-      category: 'ortho',
-      details: "Professional teeth straightening for better function and aesthetics."
-    },
-    {
-      id: 7,
-      title: "Clear Aligners",
-      description: "Invisible aligner treatment for discreet teeth straightening.",
-      icon: <FaXRay />,
-      category: 'ortho',
-      details: "Modern alternative to traditional braces - nearly invisible treatment."
-    },
-    {
-      id: 8,
-      title: "Zirconia Crown",
-      description: "Strong and aesthetic metal-free crowns.",
-      icon: <FaCrown />,
-      category: 'cosmetic',
-      details: "Durable and aesthetic crown solution that blends perfectly."
-    },
-    {
-      id: 9,
-      title: "E-Max Crown",
-      description: "Premium ceramic crowns for superior aesthetics.",
-      icon: <FaCrown />,
-      category: 'cosmetic',
-      details: "High-end ceramic crowns for the most natural-looking results."
-    },
-    {
-      id: 10,
-      title: "Digital Dentistry",
-      description: "Advanced digital technology for precise dental work.",
-      icon: <FaDesktop />,
-      category: 'digital',
-      details: "Cutting-edge digital technology for accurate dental procedures."
-    },
-    {
-      id: 11,
-      title: "Dental Implants",
-      description: "Permanent tooth replacement solution.",
-      icon: <FaCrown />,
-      category: 'implant',
-      details: "Best long-term solution for missing teeth that functions naturally."
-    },
-    {
-      id: 12,
-      title: "Dental Veneers",
-      description: "Thin porcelain shells for perfect smile transformation.",
-      icon: <FaPaintBrush />,
-      category: 'cosmetic',
-      details: "Fix chips, gaps, and discoloration with custom-made veneers."
-    },
-    {
-      id: 13,
-      title: "CAD/CAM Dentistry",
-      description: "Computer-aided design and manufacturing for dental restorations.",
-      icon: <FaRobot />,
-      category: 'digital',
-      details: "Same-day crowns and restorations using advanced CAD/CAM technology."
-    }
-  ];
-
   // --- PERFORMANCE OPTIMIZATION (useMemo) ---
-  // Ye list tabhi dobara banegi jab category change hogi. (No Lag)
+  // Ab 'allServices' bahar hai, toh dependency error nahi aayega
   const filteredServices = useMemo(() => {
     return activeCategory === 'all'
       ? allServices
@@ -183,7 +183,7 @@ const Services = ({ isPopup = false, onBookNow }) => {
           <div className="services-badge">
             <FaTooth className="badge-icon" /> Our Services
           </div>
-          {/* CATEGORY FILTER BUTTONS (Mobile Scrollable) */}
+          {/* CATEGORY FILTER BUTTONS */}
           <div className="category-filters-scroll" style={{display: 'flex', gap: '10px', overflowX: 'auto', padding: '10px 0', marginTop: '10px'}}>
              {serviceCategories.map((cat) => (
                <button 
