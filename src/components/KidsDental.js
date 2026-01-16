@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { FaChild, FaSmile, FaHeart, FaStar, FaTimes, FaChevronLeft, FaChevronRight, FaPlay, FaPause } from 'react-icons/fa';
+import { FaChild, FaSmile,  FaStar, FaTimes, FaChevronLeft, FaChevronRight, FaPlay, FaPause } from 'react-icons/fa';
 import './KidsDental.css';
 
 const KidsDental = () => {
