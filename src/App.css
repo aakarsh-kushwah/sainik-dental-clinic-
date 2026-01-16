@@ -1,0 +1,181 @@
+/* Services Popup Styles */
+.services-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+  padding: 20px;
+}
+
+.services-popup-container {
+  position: relative;
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.4s ease;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+.close-popup-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: all 0.3s ease;
+  z-index: 10001;
+}
+
+.close-popup-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  transform: rotate(90deg);
+}
+
+/* Services in popup */
+.services-popup-container .services-section {
+  background: white;
+  padding: 40px;
+}
+
+.services-popup-container .services-container {
+  padding: 0;
+}
+
+/* Make text bigger in popup */
+.services-popup-container .services-title {
+  font-size: 2.5rem;
+}
+
+.services-popup-container .services-subtitle {
+  font-size: 1.1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Popup */
+@media (max-width: 768px) {
+  .services-popup-container {
+    width: 95%;
+    max-height: 85vh;
+    border-radius: 20px;
+  }
+  
+  .services-popup-container .services-section {
+    padding: 30px 20px;
+  }
+  
+  .close-popup-btn {
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+  }
+  
+  .services-popup-container .services-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-popup-container {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .services-popup-container .services-section {
+    padding: 60px 15px 30px;
+  }
+  
+  .close-popup-btn {
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+  
+  .services-popup-container .services-title {
+    font-size: 1.8rem;
+  }
+}
+
+.services-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.services-popup-container {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 1200px;
+  height: 90vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Make Services component fill the container */
+.services-popup-container .services-section.popup-view {
+  height: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .services-popup-overlay {
+    padding: 0;
+  }
+  
+  .services-popup-container {
+    height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+  }
+}
