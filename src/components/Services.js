@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
-  FaTooth, FaSmile, FaChild, FaCrown, FaAlignCenter, 
+  FaTooth, FaSmile, FaCrown, FaAlignCenter, 
   FaTeeth, FaTeethOpen, FaMagic, FaShieldAlt, FaStar, 
-  FaArrowRight, FaCheck, FaPaintBrush, FaDesktop,
+  FaArrowRight, FaPaintBrush, FaDesktop,
   FaRobot, FaXRay
 } from 'react-icons/fa';
 import './Services.css';
@@ -11,22 +11,23 @@ const Services = ({ isPopup = false, onBookNow }) => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedService, setSelectedService] = useState(null);
 
+  // Scroll to top when popup opens
   useEffect(() => {
     if (isPopup) {
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [isPopup]);
 
+  // Static Data (Moved inside useMemo would be overkill, but keeping clean)
   const serviceCategories = [
     { id: 'all', name: 'All Services', icon: <FaStar />, color: '#2563eb' },
     { id: 'general', name: 'General Dentistry', icon: <FaTooth />, color: '#059669' },
-    { id: 'cosmetic', name: 'Cosmetic Dentistry', icon: <FaSmile />, color: '#ec4899' },
-    { id: 'implant', name: 'Dental Implants', icon: <FaCrown />, color: '#f59e0b' },
+    { id: 'cosmetic', name: 'Cosmetic', icon: <FaSmile />, color: '#ec4899' },
+    { id: 'implant', name: 'Implants', icon: <FaCrown />, color: '#f59e0b' },
     { id: 'ortho', name: 'Orthodontics', icon: <FaAlignCenter />, color: '#8b5cf6' },
-    { id: 'digital', name: 'Digital Dentistry', icon: <FaDesktop />, color: '#06b6d4' },
+    { id: 'digital', name: 'Digital', icon: <FaDesktop />, color: '#06b6d4' },
   ];
 
-  // ALL 13 SERVICES - REMOVED FEATURES TAGS
   const allServices = [
     {
       id: 1,
@@ -134,85 +135,44 @@ const Services = ({ isPopup = false, onBookNow }) => {
     }
   ];
 
-  const filteredServices = activeCategory === 'all'
-    ? allServices
-    : allServices.filter(service => service.category === activeCategory);
+  // --- PERFORMANCE OPTIMIZATION (useMemo) ---
+  // Ye list tabhi dobara banegi jab category change hogi. (No Lag)
+  const filteredServices = useMemo(() => {
+    return activeCategory === 'all'
+      ? allServices
+      : allServices.filter(service => service.category === activeCategory);
+  }, [activeCategory]);
 
-  // Handle Book Now button click
-  const handleBookNowClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Book Now button clicked');
-    
-    // Close modal if open
-    if (selectedService) {
-      setSelectedService(null);
-    }
-    
-    // If we're in popup mode, use the onBookNow prop from App.js
-    if (isPopup && onBookNow) {
-      console.log('In popup mode, using onBookNow prop');
-      onBookNow();
-    } else {
-      // If not in popup mode, scroll to booking section directly
-      scrollToBookingSection();
-    }
-  };
-
-  // Handle Book Consultation button click in modal
-  const handleBookConsultationClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Book Consultation button clicked');
-    
-    // Close the service details modal
-    setSelectedService(null);
-    
-    // If we're in popup mode, use the onBookNow prop from App.js
-    if (isPopup && onBookNow) {
-      console.log('In popup mode, using onBookNow prop');
-      onBookNow();
-    } else {
-      // If not in popup mode, scroll to booking section directly
-      scrollToBookingSection();
-    }
-  };
-
-  // Scroll to booking section function (for when NOT in popup mode)
-  const scrollToBookingSection = () => {
-    console.log('Trying to scroll to booking section...');
-    
+  // --- SMART SCROLL LOGIC ---
+  const scrollToBookingSection = useCallback(() => {
     const bookingSection = document.getElementById('booking-section');
-    
     if (bookingSection) {
-      console.log('Found booking-section element');
-      bookingSection.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start'
-      });
+      bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       
-      // Highlight the section
-      bookingSection.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.5)';
-      bookingSection.style.transition = 'box-shadow 0.5s ease';
-      
+      // UX Highlight
+      bookingSection.style.transition = 'transform 0.3s ease';
+      bookingSection.style.transform = 'scale(1.02)';
       setTimeout(() => {
-        bookingSection.style.boxShadow = '';
-      }, 2000);
-      
-      return true;
+        bookingSection.style.transform = 'scale(1)';
+      }, 500);
     }
+  }, []);
+
+  // --- HANDLERS (Clean & Secure) ---
+  const handleBookAction = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
     
-    console.log('Booking section not found');
-    return false;
-  };
-
-  const openServiceDetails = (service) => {
-    setSelectedService(service);
-  };
-
-  const closeServiceDetails = () => {
+    // Close modal first
     setSelectedService(null);
-  };
+
+    // Call prop function if available (Popup mode)
+    if (onBookNow) {
+      onBookNow();
+    } else {
+      scrollToBookingSection();
+    }
+  }, [onBookNow, scrollToBookingSection]);
 
   return (
     <section className={`services-section ${isPopup ? 'popup-view' : ''}`} id={isPopup ? undefined : "services-section"}>
@@ -222,6 +182,30 @@ const Services = ({ isPopup = false, onBookNow }) => {
         <div className="services-header">
           <div className="services-badge">
             <FaTooth className="badge-icon" /> Our Services
+          </div>
+          {/* CATEGORY FILTER BUTTONS (Mobile Scrollable) */}
+          <div className="category-filters-scroll" style={{display: 'flex', gap: '10px', overflowX: 'auto', padding: '10px 0', marginTop: '10px'}}>
+             {serviceCategories.map((cat) => (
+               <button 
+                 key={cat.id}
+                 onClick={() => setActiveCategory(cat.id)}
+                 className={`filter-chip ${activeCategory === cat.id ? 'active' : ''}`}
+                 style={{
+                   background: activeCategory === cat.id ? cat.color : '#f3f4f6',
+                   color: activeCategory === cat.id ? 'white' : '#4b5563',
+                   border: 'none',
+                   padding: '8px 16px',
+                   borderRadius: '20px',
+                   cursor: 'pointer',
+                   fontWeight: '600',
+                   fontSize: '0.9rem',
+                   whiteSpace: 'nowrap',
+                   transition: 'all 0.3s ease'
+                 }}
+               >
+                 {cat.name}
+               </button>
+             ))}
           </div>
         </div>
         
@@ -244,13 +228,12 @@ const Services = ({ isPopup = false, onBookNow }) => {
               <p className="service-description">{service.description}</p>
 
               <div className="service-actions">
-                <button className="details-btn" onClick={() => openServiceDetails(service)}>
+                <button className="details-btn" onClick={() => setSelectedService(service)}>
                   View Details
                 </button>
                 <button 
                   className="book-btn" 
-                  onClick={handleBookNowClick}
-                  style={{ cursor: 'pointer' }}
+                  onClick={handleBookAction}
                 >
                   Book Now <FaArrowRight />
                 </button>
@@ -263,9 +246,9 @@ const Services = ({ isPopup = false, onBookNow }) => {
 
       {/* Service Details Modal */}
       {selectedService && (
-        <div className="service-modal-overlay" onClick={closeServiceDetails}>
+        <div className="service-modal-overlay" onClick={() => setSelectedService(null)}>
           <div className="service-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={closeServiceDetails}>×</button>
+            <button className="close-modal" onClick={() => setSelectedService(null)}>×</button>
             
             <div className="modal-header">
               <div className="modal-icon" style={{ backgroundColor: `${serviceCategories.find(c => c.id === selectedService.category)?.color}15` }}>
@@ -285,12 +268,11 @@ const Services = ({ isPopup = false, onBookNow }) => {
               <div className="modal-cta">
                 <button 
                   className="modal-book-btn" 
-                  onClick={handleBookConsultationClick}
-                  style={{ cursor: 'pointer' }}
+                  onClick={handleBookAction}
                 >
                   Book Consultation
                 </button>
-                <button className="modal-close-btn" onClick={closeServiceDetails}>
+                <button className="modal-close-btn" onClick={() => setSelectedService(null)}>
                   Close
                 </button>
               </div>
